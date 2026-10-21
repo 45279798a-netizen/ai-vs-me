@@ -6,10 +6,16 @@
  "positions": {},
  "pending": null,
  "trades": [],
- "history": [],
+ "history": [
+  {
+   "date": "2026-10-21",
+   "value": 2000.0,
+   "cash": 2000.0
+  }
+ ],
  "decisions": [],
  "api_usd": 0.0,
- "last_processed": null,
+ "last_processed": "2026-10-21",
  "halted": false,
  "needs_key": true
 }
