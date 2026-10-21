@@ -1,0 +1,58 @@
+name: 更新實驗報告
+
+on:
+  schedule:
+    - cron: "40 7 * * 1-5"   # 週一到週五 15:40（台灣時間），收盤後
+  workflow_dispatch:          # 也可以在 Actions 頁面手動執行
+  push:
+    branches: [main]
+    paths: ["config.json", "experiment.py", ".github/workflows/update.yml"]
+
+permissions:
+  contents: write   # 把 history.csv 存回 repo（也讓排程不會因 60 天沒動靜被停用）
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 計算兩個帳戶並產生報告
+        run: python experiment.py --out site/index.html
+
+      - name: 保存每日淨值紀錄
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          if [ -f history.csv ]; then
+            git add history.csv
+            git diff --cached --quiet || git commit -m "更新淨值紀錄 $(TZ=Asia/Taipei date +%F)"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+      - name: 發布網頁
+        id: deploy
+        uses: actions/deploy-pages@v5
