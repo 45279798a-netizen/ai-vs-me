@@ -1,4 +1,4 @@
-name: 更新實驗報告
+name: AI 每日交易判斷
 
 on:
   schedule:
@@ -6,15 +6,15 @@ on:
   workflow_dispatch:          # 也可以在 Actions 頁面手動執行
   push:
     branches: [main]
-    paths: ["config.json", "experiment.py", ".github/workflows/update.yml"]
+    paths: ["config.json", "agent.py", ".github/workflows/update.yml"]
 
 permissions:
-  contents: write   # 把 history.csv 存回 repo（也讓排程不會因 60 天沒動靜被停用）
+  contents: write   # 把 state.json 存回 repo（也讓排程不會因 60 天沒動靜被停用）
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  group: ai-trader     # 同一時間只跑一個，避免重複下單
   cancel-in-progress: false
 
 jobs:
@@ -34,18 +34,18 @@ jobs:
       - name: 安裝套件
         run: pip install -r requirements.txt
 
-      - name: 計算兩個帳戶並產生報告
-        run: python experiment.py --out site/index.html
+      - name: 成交昨天的訂單、讓 AI 做今天的判斷
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python agent.py --out site/index.html
 
-      - name: 保存每日淨值紀錄
+      - name: 保存帳戶狀態
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          if [ -f history.csv ]; then
-            git add history.csv
-            git diff --cached --quiet || git commit -m "更新淨值紀錄 $(TZ=Asia/Taipei date +%F)"
-            git push
-          fi
+          git add state.json
+          git diff --cached --quiet || git commit -m "AI 帳戶更新 $(TZ=Asia/Taipei date +%F)"
+          git push
 
       - uses: actions/configure-pages@v6
 
