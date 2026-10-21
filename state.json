@@ -1,0 +1,15 @@
+{
+ "version": 1,
+ "start_date": "2026-10-21",
+ "capital": 2000,
+ "cash": 2000.0,
+ "positions": {},
+ "pending": null,
+ "trades": [],
+ "history": [],
+ "decisions": [],
+ "api_usd": 0.0,
+ "last_processed": null,
+ "halted": false,
+ "needs_key": true
+}
