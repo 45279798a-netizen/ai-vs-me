@@ -763,6 +763,10 @@ def main():
         data = {k: v[v.index <= pd.Timestamp(a.today)] for k, v in data.items()}
 
     new_days = step(cfg, st, data, now, use_mock=a.mock)
+    if not a.mock and not os.environ.get("ANTHROPIC_API_KEY"):
+        st["needs_key"] = True                           # 網頁上提醒去設定金鑰
+    elif os.environ.get("ANTHROPIC_API_KEY"):
+        st.pop("needs_key", None)
     print(f"處理了 {len(new_days)} 個新交易日；淨值 {st['history'][-1]['value']:,.0f}" if st["history"]
           else "還沒有完整的交易日資料")
 
