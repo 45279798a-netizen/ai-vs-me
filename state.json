@@ -21,11 +21,16 @@
    "date": "2026-10-23",
    "value": 2000.0,
    "cash": 2000.0
+  },
+  {
+   "date": "2026-10-27",
+   "value": 2000.0,
+   "cash": 2000.0
   }
  ],
  "decisions": [],
  "api_usd": 0.0,
- "last_processed": "2026-10-23",
+ "last_processed": "2026-10-27",
  "halted": false,
  "needs_key": true
 }
