@@ -61,11 +61,16 @@
    "date": "2026-11-05",
    "value": 2000.0,
    "cash": 2000.0
+  },
+  {
+   "date": "2026-11-06",
+   "value": 2000.0,
+   "cash": 2000.0
   }
  ],
  "decisions": [],
  "api_usd": 0.0,
- "last_processed": "2026-11-05",
+ "last_processed": "2026-11-06",
  "halted": false,
  "needs_key": true
 }
